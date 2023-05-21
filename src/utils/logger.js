@@ -1,15 +1,8 @@
-const pino = require('pino')
 const moment = require('moment')
-const pretty = require('pino-pretty')
 
-const logger = pino(
-  {
-    base: {
-      pid: false
-    },
-    timestamp: () => `, "time":"${moment().format()}"`
-  },
-  pretty()
-)
+const logger = (req, res, next) => {
+  console.log(`[${moment().format()}]: ${req.method} ${req.path}`)
+  next()
+}
 
 module.exports = logger

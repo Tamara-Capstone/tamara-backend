@@ -2,30 +2,20 @@ const AnswerService = require('../services/answer.service')
 const validations = require('../validations/answer.validation')
 const { getQuestionById } = require('../services/question.service')
 
-const logger = require('../utils/logger')
-const responseMsg = require('../utils/responseMsg')
-
 const getAnswers = async (req, res) => {
-  let message = ''
   const { value, error } = validations.getAnswersValidation(req.body)
-  if (error) {
-    message = error.details[0].message
-    logger.error(responseMsg(req, 'answers', message))
-    return res.status(422).json({ error: message })
-  }
+  if (error) return res.status(422).json({ error: error.details[0].message })
 
   try {
-    const question = await getQuestionById(value.questionId)
-    if (!question) {
-      message = `Question with ID: ${value.questionId} is not found`
-      logger.error(responseMsg(req, 'answers', message))
-      return res.status(422).json({ error: message })
-    }
+    const { questionId } = value
+    const question = await getQuestionById(questionId)
+    if (!question) return res.status(422).json({ error: `Question with ID: ${questionId} is not found` })
 
     const answers = await AnswerService.getAnswerByQuestionId(question.id)
-    message = `Success to get answers from question with ID: ${question.id}`
-    logger.info(responseMsg(req, 'answers', message))
-    res.status(200).json({ message, data: answers })
+    res.status(200).json({
+      message: `Success to get answers from question with ID: ${question.id}`,
+      data: answers
+    })
   } catch (error) {
     res.status(400).json({ error })
   }
@@ -33,48 +23,28 @@ const getAnswers = async (req, res) => {
 
 const getAnswer = async (req, res) => {
   const { answerId } = req.params
-  let message = ''
-
   try {
     const answer = await AnswerService.getAnswerById(answerId)
-    if (!answer) {
-      message = `Answer with ID: ${answerId} is not found`
-      logger.error(responseMsg(req, 'answers', message))
-      return res.status(422).json({ error: message })
-    }
-
-    message = `Success to get answer with ID: ${answer.id}`
-    logger.info(responseMsg(req, 'answers', message))
-    res.status(200).json({ message, data: answer })
+    if (!answer) return res.status(422).json({ error: `Answer with ID: ${answerId} is not found` })
+    res.status(200).json({ message: `Success to get answer with ID: ${answer.id}`, data: answer })
   } catch (error) {
     res.status(400).json({ error })
   }
 }
 
 const createAnswer = async (req, res) => {
-  let message = ''
-
-  const { value, error } = validations.createAnswerValidation(req.body)
-  if (error) {
-    message = error.details[0].message
-    logger.error(responseMsg(req, 'answers', message))
-    return res.status(422).json({ error: message })
-  }
+  const { userId, body } = req
+  const { value, error } = validations.createAnswerValidation(body)
+  if (error) return res.status(422).json({ error: error.details[0].message })
 
   try {
-    const question = await getQuestionById(value.questionId)
-    if (!question) {
-      message = `Question with ID: ${value.questionId} is not found`
-      logger.error(responseMsg(req, 'answers', message))
-      return res.status(422).json({ error: message })
-    }
+    const { questionId } = value
+    const question = await getQuestionById(questionId)
+    if (!question) return res.status(422).json({ error: `Question with ID: ${questionId} is not found` })
 
-    const payload = { userId: req.userId, ...value }
+    const payload = { userId, ...value }
     await AnswerService.addAnswer(payload)
-
-    message = 'Success to create new answer'
-    logger.info(responseMsg(req, 'answers', message))
-    res.status(200).json({ message })
+    res.status(200).json({ message: 'Success to create new answer' })
   } catch (error) {
     res.status(400).json({ error })
   }
@@ -83,27 +53,16 @@ const createAnswer = async (req, res) => {
 const updateAnswer = async (req, res) => {
   const { answerId } = req.params
   const { userId, body } = req
-  let message = ''
 
   const { value, error } = validations.updateAnswerValidation(body)
-  if (error) {
-    message = error.details[0].message
-    logger.error(responseMsg(req, 'answers', message))
-    return res.status(422).json({ error: message })
-  }
+  if (error) return res.status(422).json({ error: error.details[0].message })
 
   try {
     const answer = await AnswerService.getUserLoginAnswer(answerId, userId)
-    if (!answer) {
-      message = `Answer with ID: ${answerId} and userId: ${userId} is not found`
-      logger.error(responseMsg(req, 'answers', message))
-      return res.status(404).json({ error: message })
-    }
+    if (!answer) return res.status(404).json({ error: `User do not have an answer with id: ${answerId}` })
 
     await AnswerService.updateAnswerById(answerId, value)
-    message = 'Success to update answer'
-    logger.info(responseMsg(req, 'answers', message))
-    res.status(200).json({ message })
+    res.status(200).json({ message: 'Success to update answer' })
   } catch (error) {
     res.status(400).json({ error })
   }
@@ -112,20 +71,13 @@ const updateAnswer = async (req, res) => {
 const deleteAnswer = async (req, res) => {
   const { answerId } = req.params
   const { userId } = req
-  let message = ''
 
   try {
     const answer = await AnswerService.getUserLoginAnswer(answerId, userId)
-    if (!answer) {
-      message = `Answer with ID: ${answerId} and userId: ${userId} is not found`
-      logger.error(responseMsg(req, 'answers', message))
-      return res.status(404).json({ error: message })
-    }
+    if (!answer) return res.status(404).json({ error: `User do not have an answer with id: ${answerId}` })
 
     await AnswerService.deleteAnswerById(answerId)
-    message = 'Success to delete answer'
-    logger.info(responseMsg(req, 'answers', message))
-    res.status(200).json({ message })
+    res.status(200).json({ message: 'Success to delete answer' })
   } catch (error) {
     res.status(400).json({ error })
   }

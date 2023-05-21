@@ -1,70 +1,39 @@
 const authValidations = require('../validations/auth.validation')
 const authServices = require('../services/auth.service')
-
-const responseMsg = require('../utils/responseMsg')
 const { signJWT } = require('../utils/jwt')
-const logger = require('../utils/logger')
 
 const register = async (req, res) => {
-  let message = ''
-
   const { value, error } = authValidations.registerValidation(req.body)
-  if (error) {
-    message = error.details[0].message
-    logger.error(responseMsg(req, 'auth', message))
-    return res.status(422).json({ error: message })
-  }
+  if (error) return res.status(422).json({ error: error.details[0].message })
 
   try {
     const isUserExist = await authServices.findUserByEmail(value.email)
-    if (isUserExist) {
-      message = 'Email has been registered'
-      logger.error(responseMsg(req, 'auth', message))
-      return res.status(402).json({ error: message })
-    }
+    if (isUserExist) return res.status(402).json({ error: 'Email has been registered' })
 
     value.password = authServices.hashing(value.password)
     await authServices.addUser(value)
-
-    message = 'Account has been successfully created'
-    logger.info(responseMsg(req, 'auth', message))
-    res.status(201).json({ message })
+    res.status(201).json({ message: 'Account has been successfully created' })
   } catch (error) {
     res.status(400).json({ error })
   }
 }
 
 const login = async (req, res) => {
-  let message = ''
-
   const { value, error } = authValidations.loginValidation(req.body)
-  if (error) {
-    message = error.details[0].message
-    logger.error(responseMsg(req, 'auth', message))
-    return res.status(422).json({ error: message })
-  }
+  if (error) return res.status(422).json({ error: error.details[0].message })
 
   try {
+    // Check user email is correct
     const user = await authServices.findUserByEmail(value.email)
-    if (!user) {
-      message = 'Email is incorrect'
-      logger.error(responseMsg(req, 'auth', message))
-      return res.status(401).json({ error: message })
-    }
+    if (!user) return res.status(401).json({ error: 'Email is incorrect' })
 
+    // Check user password is valid
     const isValidPassword = authServices.checkPassword(value.password, user.password)
-    if (!isValidPassword) {
-      message = 'Password is incorrect'
-      logger.error(responseMsg(req, 'auth', message))
-      return res.status(401).json({ error: message })
-    }
+    if (!isValidPassword) return res.status(401).json({ error: 'Password is incorrect' })
 
     const { password, ...others } = user
     const accessToken = signJWT(others)
-
-    message = `${user.fullname} has been login successfully`
-    logger.info(responseMsg(req, 'auth', message))
-    res.status(200).json({ message, accessToken })
+    res.status(200).json({ message: `${user.fullname} has been login successfully`, accessToken })
   } catch (error) {
     res.status(400).json({ error })
   }

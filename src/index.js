@@ -3,8 +3,8 @@ const express = require('express')
 const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
 
-const logger = require('./utils/logger')
 const routes = require('./routes')
+const logger = require('./utils/logger')
 
 dotenv.config()
 const app = express()
@@ -14,8 +14,10 @@ app.use(express.json())
 app.use(bodyParser.json({ limit: '30mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 
+app.use(logger)
+
 routes(app)
 
 app.listen(port, () => {
-  logger.info(`Server is listening on http://localhost:${port}`)
+  console.log(`Server is listening on http://localhost:${port}`)
 })

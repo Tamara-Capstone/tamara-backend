@@ -1,50 +1,30 @@
 const { weatherValidation } = require('../validations/wheater.validation')
 const weatherServices = require('../services/weather.service')
 
-const logger = require('../utils/logger')
-const responseMsg = require('../utils/responseMsg')
-
 const getWeather = async (req, res) => {
-  let message = ''
+  const { lat, lon, search } = req.query
+
   try {
     /* Dapatkan data cuaca berdasarkan "keyword" */
-    if (req.query.search) {
-      const data = await weatherServices.getWeatherByKeyword(req.query.search)
+    if (search) {
+      const data = await weatherServices.getWeatherByKeyword(search)
       if (!data.length > 0) {
-        message = `Data with keyword ${req.query.search} is not found`
-        logger.error(responseMsg(req, 'weather', message))
-        return res.status(404).json({ error: message })
+        return res.status(404).json({ error: `Data with keyword ${search} is not found` })
       }
-
-      message = `Success to get wheater with keyword ${req.query.search}`
-      logger.info(responseMsg(req, 'weather', message))
-      return res.status(200).json({ message, data })
+      return res.status(200).json({ message: `Success to get wheater with keyword ${search}`, data })
     }
 
     /* Dapatkan cuaca berdasarkan lat dan lon dari gps */
-    if (req.query.lat && req.query.lon) {
-      const { value, error } = weatherValidation(req.query)
-      if (error) {
-        message = error.details[0].message
-        logger.error(responseMsg(req, 'weather', message))
-        return res.status(422).json({ error: message })
-      }
+    if (lat && lon) {
+      const { value, error } = weatherValidation({ lat, lon })
+      if (error) return res.status(422).json({ error: error.details[0].message })
 
       const data = await weatherServices.getWeatherByLocation(value.lat, value.lon)
-      if (!data) {
-        message = 'Data not found, please check your body request'
-        logger.error(responseMsg(req, 'weather', message))
-        return res.status(404).json({ error: message })
-      }
-
-      message = 'Success to get wheater from location'
-      logger.info(responseMsg(req, 'weather', message))
-      return res.status(200).json({ message, data })
+      if (!data) return res.status(404).json({ error: 'Data not found, please check your body request' })
+      return res.status(200).json({ message: 'Success to get wheater from location', data })
     }
 
-    message = 'Query params is not found'
-    logger.info(responseMsg(req, 'weather', message))
-    return res.status(404).json({ message })
+    res.status(404).json({ message: 'Query params is not found' })
   } catch (error) {
     res.status(400).json({ error })
   }
@@ -52,19 +32,10 @@ const getWeather = async (req, res) => {
 
 const getWeatherDetail = async (req, res) => {
   const { weatherId } = req.params
-  let message = ''
-
   try {
     const data = await weatherServices.getWeatherById(weatherId)
-    if (!data) {
-      message = 'Data not found, please check your body request'
-      logger.error(responseMsg(req, 'weather', message))
-      return res.status(404).json({ error: message })
-    }
-
-    message = `Success to get wheater data with ID: ${weatherId}`
-    logger.info(responseMsg(req, 'weather', message))
-    res.status(200).json({ message, data })
+    if (!data) return res.status(404).json({ error: 'Data not found, please check your body request' })
+    res.status(200).json({ message: `Success to get wheater data with ID: ${weatherId}`, data })
   } catch (error) {
     res.status(400).json({ error })
   }

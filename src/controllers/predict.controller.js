@@ -1,6 +1,3 @@
-const logger = require('../utils/logger')
-const responseMsg = require('../utils/responseMsg')
-
 const data = [
   {
     health: 'Tanaman Sehat',
@@ -27,21 +24,13 @@ const data = [
 ]
 
 const predictPicture = async (req, res) => {
-  let message = ''
-
-  if (!req.file) {
-    message = 'File is not uploaded'
-    logger.error(req, 'predict', message)
-    return res.status(401).json({ error: message })
-  }
+  if (!req.file) return res.status(401).json({ error: 'File is not uploaded' })
 
   const picture = req.file.cloudStoragePublicUrl
   const predict = Math.random() < 0.5 ? data[0] : data[1]
 
-  message = 'Success to get data prediction'
-  logger.info(responseMsg(req, 'predict', message))
   res.status(200).json({
-    message,
+    message: 'Success to get data prediction',
     data: { picture, ...predict }
   })
 }

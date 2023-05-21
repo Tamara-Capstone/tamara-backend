@@ -1,6 +1,5 @@
 const { Storage } = require('@google-cloud/storage')
 const CONFIG = require('../config/environtment')
-const logger = require('../utils/logger')
 const uuid = require('uuid').v4
 const path = require('path')
 
@@ -38,7 +37,6 @@ ImgUpload.uploadToGcs = (req, res, next) => {
 
   stream.on('error', (err) => {
     req.file.cloudStorageError = err
-    logger.error(err)
     next(err)
   })
 
@@ -54,8 +52,6 @@ ImgUpload.uploadToGcs = (req, res, next) => {
 ImgUpload.delete = async (url) => {
   const fileName = getFileName(url)
   const file = bucket.file(fileName)
-
-  logger.info({ fileName })
 
   try {
     await file.delete()
