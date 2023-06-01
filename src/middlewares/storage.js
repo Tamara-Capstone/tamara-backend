@@ -24,29 +24,58 @@ const getFileName = (url) => {
 const ImgUpload = {}
 
 ImgUpload.uploadToGcs = (req, res, next) => {
-  if (!req.file) return next()
+  if (!req.files || req.files.length === 0) {
+    console.log('no files')
+    return next()
+  }
 
-  const gcsname = uuid() + '-' + req.file.originalname
-  const file = bucket.file(gcsname)
+  req.files.forEach((file) => {
+    const gcsname = uuid() + '-' + file.originalname
+    const imageFile = bucket.file(gcsname)
 
-  const stream = file.createWriteStream({
-    metadata: {
-      contentType: req.file.mimetype
-    }
+    const stream = imageFile.createWriteStream({
+      metadata: {
+        contentType: file.mimetype
+      }
+    })
+
+    stream.on('error', (err) => {
+      file.cloudStorageError = err
+      next(err)
+    })
+
+    stream.on('finish', () => {
+      file.cloudStorageObject = gcsname
+      file.cloudStoragePublicUrl = getPublicUrl(gcsname)
+      if (req.files.every((f) => f.cloudStorageObject)) {
+        next()
+      }
+    })
+
+    stream.end(file.buffer)
   })
 
-  stream.on('error', (err) => {
-    req.file.cloudStorageError = err
-    next(err)
-  })
+  // const gcsname = uuid() + '-' + req.file.originalname
+  // const file = bucket.file(gcsname)
 
-  stream.on('finish', () => {
-    req.file.cloudStorageObject = gcsname
-    req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
-    next()
-  })
+  // const stream = file.createWriteStream({
+  //   metadata: {
+  //     contentType: req.file.mimetype
+  //   }
+  // })
 
-  stream.end(req.file.buffer)
+  // stream.on('error', (err) => {
+  //   req.file.cloudStorageError = err
+  //   next(err)
+  // })
+
+  // stream.on('finish', () => {
+  //   req.file.cloudStorageObject = gcsname
+  //   req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
+  //   next()
+  // })
+
+  // stream.end(req.file.buffer)
 }
 
 ImgUpload.delete = async (url) => {

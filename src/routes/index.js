@@ -5,6 +5,7 @@ const predictRoute = require('./predict.route')
 const answerRoute = require('./answer.route')
 const analyzeRoute = require('./analyze.route')
 const weatherRoute = require('./weather.route')
+const recommendationRoute = require('./recommendation.route')
 
 const _routes = [
   ['/auth', authRoute],
@@ -13,7 +14,8 @@ const _routes = [
   ['/answers', answerRoute],
   ['/predict', predictRoute],
   ['/weather', weatherRoute],
-  ['/analyze', analyzeRoute]
+  ['/analyze', analyzeRoute],
+  ['/recommendation', recommendationRoute]
 ]
 
 const routes = (app) => {

@@ -1,14 +1,14 @@
 # Base image
-FROM node:14
+FROM node:14.21.2-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package.json package.json
+# Environtment Variables
+ENV PORT 5000
 
-# Install dependencies
-RUN npm install --omit=dev
+# Copy package.json
+COPY package.json package.json
 
 # Copy service account file
 COPY credentials.json credentials.json
@@ -19,8 +19,11 @@ COPY src ./src
 # Copy Prisma schema file
 COPY prisma ./prisma
 
+# Install dependencies
+RUN npm install --omit=dev
+
 # Expose a port if needed
 EXPOSE 5000
 
 # Start the application
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "start"]

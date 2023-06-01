@@ -58,3 +58,19 @@ model Answer {
   user        User     @relation(fields: [userId], references: [id])
   question    Question @relation(fields: [questionId], references: [id])
 }
+
+model Predict {
+  id              String         @id @default(uuid())
+  fruit_name      String
+  class           String
+  recommendation  String         @db.Text
+  characteristics String
+  images          ImagePredict[]
+}
+
+model ImagePredict {
+  id        String   @id @default(uuid())
+  image     String
+  predictId String?
+  Predict   Predict? @relation(fields: [predictId], references: [id])
+}
