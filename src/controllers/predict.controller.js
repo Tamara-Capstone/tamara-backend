@@ -1,38 +1,37 @@
-const data = [
-  {
-    health: 'Tanaman Sehat',
-    characteristics: [
-      'Tanaman dan pohon yang sehat memiliki warna hijau tua yang baik dan bunga bewarna cerah',
-      'Daunnya kuat yang akan memunculkan buah-buahan bergizi',
-      'Secara keseluruhan, tanaman itu bagus menjaga kesehatannya'
-    ],
-    recomendations:
-      'Untuk menjaga tanaman tetap sehat, ada beberapa hal yang perlu diperhatikan. Pertama, pastikan tanaman Anda mendapatkan cahaya yang cukup. Setiap jenis tanaman memiliki kebutuhan cahaya yang berbeda, jadi perhatikan tempat yang tepat untuk menempatkannya. Selain itu, penting untuk memberikan air secukupnya sesuai kebutuhan tanaman. Jangan terlalu banyak atau terlalu sedikit, tetapi sesuaikan dengan jenis tanaman dan kondisi lingkungan. Selanjutnya, jaga kebersihan tanaman dengan membersihkan daun yang kotor atau layu. Ini membantu tanaman bernapas dengan baik dan mencegah infestasi serangga atau penyakit. Pemupukan secara teratur juga penting untuk memberikan nutrisi yang cukup kepada tanaman. Gunakan pupuk organik atau pupuk sesuai petunjuk untuk memberikan nutrisi yang seimbang. Selain itu, perhatikan suhu dan kelembaban lingkungan. Beberapa tanaman membutuhkan suhu dan kelembaban tertentu untuk tumbuh dengan baik. Pastikan untuk menjaga lingkungan sekitar tanaman dalam kisaran yang sesuai. Terakhir, perhatikan tanda-tanda masalah pada tanaman seperti daun kuning, layu, atau hama. Jika ada masalah, segera identifikasi penyebabnya dan ambil tindakan yang diperlukan, seperti memotong daun yang rusak, menggunakan insektisida alami, atau memindahkan tanaman ke tempat yang lebih sesuai. Dengan menjaga aspek-aspek ini, Anda dapat membantu tanaman tetap sehat dan tumbuh dengan baik. Penting untuk memberikan perhatian dan perawatan yang teratur agar tanaman dapat tumbuh indah dan kuat.'
-  },
-  {
-    health: 'Kekurangan Kalium',
-    disease: 'Defisiensi',
-    characteristics: [
-      'Daun menguning yang dimulai dari tepian',
-      'Pembuluh daun utama tetap bewarna hijau tua',
-      'Daun mengering',
-      'Pertumbuhan terhambat'
-    ],
-    recomendations:
-      'Kami merekomendasikan penerapan kontrol organik pada tahap-tahap awal penyakit atau ketika tanaman mendekati panen. Pada stadium penyakit yang lebih lanjut, gunakan kontrol kimiawi. Mencapur atau memberikan produk-produk berbeda pada saat yang bersamaan tidak di rekomendasikan.'
-  }
-]
+// Mango_sooty_mold_disease
+const { predictValidation } = require('../validations/predict.validation')
+const predictServices = require('../services/predict.service')
 
 const predictPicture = async (req, res) => {
-  if (!req.file) return res.status(401).json({ error: 'File is not uploaded' })
+  const { userId, body } = req
+  const { error, value } = predictValidation(body)
+  if (error) return res.status(422).json({ error: error.details[0].message })
+  if (!req.file) return res.status(422).json({ error: 'Image is required' })
 
-  const picture = req.file.cloudStoragePublicUrl
-  const predict = Math.random() < 0.5 ? data[0] : data[1]
+  if (!predictServices.isAllowedFruit(value.fruit_name)) {
+    return res.status(422).json({ error: `${value.fruit_name} is not allowed` })
+  }
 
-  res.status(200).json({
-    message: 'Success to get data prediction',
-    data: { picture, ...predict }
-  })
+  try {
+    const { data } = await predictServices.predictToML(req.file, value.fruit_name)
+    const recommendation = await predictServices.getRecommendation(data.label, value.fruit_name)
+    await predictServices.addPredict({ userId, recommendationId: recommendation[0].id })
+    predictServices.deleteImagePredict(req.file.filename)
+    res.status(200).json({ message: 'Success to predict', data: recommendation })
+  } catch (error) {
+    res.status(400).json({ error })
+  }
 }
 
-module.exports = { predictPicture }
+const getPredicts = async (req, res) => {
+  const { userId } = req
+
+  try {
+    const data = await predictServices.getPredictsByUserId(userId)
+    res.status(200).json({ message: 'Success to get your predict', data })
+  } catch (error) {
+    res.status(400).json({ error })
+  }
+}
+
+module.exports = { predictPicture, getPredicts }

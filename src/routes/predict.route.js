@@ -1,11 +1,11 @@
 const express = require('express')
-const upload = require('../middlewares/multer')
-const ImgUpload = require('../middlewares/storage')
+const { uploadLocal } = require('../middlewares/multer')
 const verifyToken = require('../middlewares/verifyToken')
-const { predictPicture } = require('../controllers/predict.controller')
+const predictController = require('../controllers/predict.controller')
 
 const predictRoute = express.Router()
 
-predictRoute.post('/', verifyToken, upload.single('picture'), ImgUpload.uploadToGcs, predictPicture)
+predictRoute.post('/', verifyToken, uploadLocal.single('images'), predictController.predictPicture)
+predictRoute.get('/', verifyToken, predictController.getPredicts)
 
 module.exports = predictRoute

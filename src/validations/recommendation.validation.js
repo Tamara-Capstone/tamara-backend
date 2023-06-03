@@ -6,7 +6,7 @@ const recommendationValidation = (payload) => {
     class: Joi.string().required(),
     recommendation: Joi.string().required(),
     characteristics: Joi.string().required(),
-    images: Joi.array().items(Joi.string()).required()
+    images: Joi.array().items(Joi.string()).required().min(1)
   })
   return schema.validate(payload)
 }

@@ -1,6 +1,6 @@
 const express = require('express')
-const upload = require('../middlewares/multer')
-const ImgUpload = require('../middlewares/storage')
+const { ImgUpload } = require('../middlewares/storage')
+const { uploadStorage } = require('../middlewares/multer')
 const recommendationController = require('../controllers/recommendation.controller')
 
 const recommendationRoute = express.Router()
@@ -9,7 +9,7 @@ recommendationRoute.get('/', recommendationController.getRecommendations)
 recommendationRoute.get('/:recommendationId', recommendationController.getRecommendation)
 recommendationRoute.post(
   '/',
-  upload.array('images'),
+  uploadStorage.array('images'),
   ImgUpload.uploadToGcs,
   recommendationController.createRecommendation
 )

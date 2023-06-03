@@ -1,7 +1,7 @@
 const db = require('../utils/db')
 
 const getAllRecommendation = async () => {
-  return await db.predict.findMany({
+  return await db.recommendation.findMany({
     include: {
       images: true
     }
@@ -9,14 +9,14 @@ const getAllRecommendation = async () => {
 }
 
 const getRecommendationById = async (recommendationId) => {
-  return await db.predict.findUnique({
+  return await db.recommendation.findUnique({
     where: { id: recommendationId },
     include: { images: true }
   })
 }
 
 const searchRecommendationByKeyword = async (keyword) => {
-  return await db.predict.findMany({
+  return await db.recommendation.findMany({
     where: {
       OR: [
         {
@@ -45,7 +45,7 @@ const searchRecommendationByKeyword = async (keyword) => {
 }
 
 const addRecommendation = async (fields) => {
-  return await db.predict.create({
+  return await db.recommendation.create({
     data: {
       ...fields,
       images: {
@@ -57,7 +57,11 @@ const addRecommendation = async (fields) => {
 }
 
 const deleteRecommendationById = async (recommendationId) => {
-  return await db.predict.delete({ where: { id: recommendationId } })
+  return await db.recommendation.delete({ where: { id: recommendationId } })
+}
+
+const deleteRecommendationImages = async (recommendationId) => {
+  return await db.ImageRecommendation.deleteMany({ where: { recommendationId } })
 }
 
 module.exports = {
@@ -65,5 +69,6 @@ module.exports = {
   getRecommendationById,
   searchRecommendationByKeyword,
   addRecommendation,
-  deleteRecommendationById
+  deleteRecommendationById,
+  deleteRecommendationImages
 }

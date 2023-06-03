@@ -23,59 +23,44 @@ const getFileName = (url) => {
 
 const ImgUpload = {}
 
-ImgUpload.uploadToGcs = (req, res, next) => {
-  if (!req.files || req.files.length === 0) {
-    console.log('no files')
-    return next()
-  }
+const onUpload = (file, next, req) => {
+  const gcsname = uuid() + '-' + file.originalname
+  const imageFile = bucket.file(gcsname)
 
-  req.files.forEach((file) => {
-    const gcsname = uuid() + '-' + file.originalname
-    const imageFile = bucket.file(gcsname)
-
-    const stream = imageFile.createWriteStream({
-      metadata: {
-        contentType: file.mimetype
-      }
-    })
-
-    stream.on('error', (err) => {
-      file.cloudStorageError = err
-      next(err)
-    })
-
-    stream.on('finish', () => {
-      file.cloudStorageObject = gcsname
-      file.cloudStoragePublicUrl = getPublicUrl(gcsname)
-      if (req.files.every((f) => f.cloudStorageObject)) {
-        next()
-      }
-    })
-
-    stream.end(file.buffer)
+  const stream = imageFile.createWriteStream({
+    metadata: {
+      contentType: file.mimetype
+    }
   })
 
-  // const gcsname = uuid() + '-' + req.file.originalname
-  // const file = bucket.file(gcsname)
+  stream.on('error', (err) => {
+    file.cloudStorageError = err
+    next(err)
+  })
 
-  // const stream = file.createWriteStream({
-  //   metadata: {
-  //     contentType: req.file.mimetype
-  //   }
-  // })
+  stream.on('finish', () => {
+    file.cloudStorageObject = gcsname
+    file.cloudStoragePublicUrl = getPublicUrl(gcsname)
+    if (req) {
+      if (req.files.every((f) => f.cloudStorageObject)) next()
+    } else {
+      next()
+    }
+  })
 
-  // stream.on('error', (err) => {
-  //   req.file.cloudStorageError = err
-  //   next(err)
-  // })
+  stream.end(file.buffer)
+}
 
-  // stream.on('finish', () => {
-  //   req.file.cloudStorageObject = gcsname
-  //   req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
-  //   next()
-  // })
-
-  // stream.end(req.file.buffer)
+ImgUpload.uploadToGcs = (req, res, next) => {
+  if (req.file) {
+    onUpload(req.file, next)
+  } else if (req.files.length > 0) {
+    req.files.forEach((file) => {
+      onUpload(file, next, req)
+    })
+  } else {
+    next()
+  }
 }
 
 ImgUpload.delete = async (url) => {
@@ -90,4 +75,4 @@ ImgUpload.delete = async (url) => {
   }
 }
 
-module.exports = ImgUpload
+module.exports = { ImgUpload, bucket }

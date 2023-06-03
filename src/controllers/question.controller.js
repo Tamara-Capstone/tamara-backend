@@ -1,6 +1,6 @@
 const validations = require('../validations/question.validation')
 const QuestionServices = require('../services/question.service')
-const gcpStorage = require('../middlewares/storage')
+const { ImgUpload } = require('../middlewares/storage')
 
 const getQuestions = async (req, res) => {
   const { search } = req.query
@@ -90,7 +90,7 @@ const deleteQuestion = async (req, res) => {
     }
 
     // delete all answer and picture from question that want to delete
-    if (question[0].picture) await gcpStorage.delete(question[0].picture)
+    if (question[0].picture) await ImgUpload.delete(question[0].picture)
     await QuestionServices.deleteAnswerByQuestionId(questionId)
     await QuestionServices.deleteQuestionById(questionId)
 

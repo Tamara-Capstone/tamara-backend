@@ -1,4 +1,4 @@
-const ImgUpload = require('../middlewares/storage')
+const { ImgUpload } = require('../middlewares/storage')
 const recommendationServices = require('../services/recommendation.service')
 const { recommendationValidation } = require('../validations/recommendation.validation')
 
@@ -60,6 +60,7 @@ const deleteRecommendation = async (req, res) => {
     )
 
     await recommendationServices.deleteRecommendationById(recommendationId)
+    await recommendationServices.deleteRecommendationImages(recommendationId)
     res.status(200).json({ message: `Success to delete recommendation with ID ${recommendationId}` })
   } catch (error) {
     res.status(400).json({ error })
