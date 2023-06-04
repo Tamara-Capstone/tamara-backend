@@ -1,22 +1,11 @@
-const db = require('../utils/db')
+const User = require('../models/user.model')
 
-const getUserById = async (id) => {
-  return await db.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      fullname: true,
-      email: true,
-      photo: true
-    }
-  })
+const getUserById = async (userId) => {
+  return await User.findById(userId, { password: 0 })
 }
 
-const updateUserById = async (id, payload) => {
-  return await db.user.update({
-    where: { id },
-    data: payload
-  })
+const updateUserById = async (userId, payload) => {
+  return await User.findByIdAndUpdate(userId, payload)
 }
 
 module.exports = { getUserById, updateUserById }

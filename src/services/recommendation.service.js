@@ -1,67 +1,30 @@
-const db = require('../utils/db')
+const Recommendation = require('../models/recommendation.model')
 
 const getAllRecommendation = async () => {
-  return await db.recommendation.findMany({
-    include: {
-      images: true
-    }
-  })
+  return await Recommendation.find()
 }
 
 const getRecommendationById = async (recommendationId) => {
-  return await db.recommendation.findUnique({
-    where: { id: recommendationId },
-    include: { images: true }
-  })
+  return await Recommendation.findById(recommendationId)
 }
 
 const searchRecommendationByKeyword = async (keyword) => {
-  return await db.recommendation.findMany({
-    where: {
-      OR: [
-        {
-          fruit_name: {
-            contains: keyword
-          }
-        },
-        {
-          class: {
-            contains: keyword
-          }
-        },
-        {
-          recommendation: {
-            contains: keyword
-          }
-        },
-        {
-          characteristics: {
-            contains: keyword
-          }
-        }
-      ]
-    }
+  return await Recommendation.find({
+    $or: [
+      { fruit_name: { $regex: keyword, $options: 'i' } },
+      { class: { $regex: keyword, $options: 'i' } },
+      { recommendation: { $regex: keyword, $options: 'i' } },
+      { characteristics: { $regex: keyword, $options: 'i' } }
+    ]
   })
 }
 
 const addRecommendation = async (fields) => {
-  return await db.recommendation.create({
-    data: {
-      ...fields,
-      images: {
-        create: fields.images.map((url) => ({ image: url }))
-      }
-    },
-    include: { images: true }
-  })
+  return await Recommendation.create(fields)
 }
 
 const deleteRecommendationById = async (recommendationId) => {
-  return await db.recommendation.delete({ where: { id: recommendationId } })
-}
-
-const deleteRecommendationImages = async (recommendationId) => {
-  return await db.ImageRecommendation.deleteMany({ where: { recommendationId } })
+  return await Recommendation.findByIdAndDelete(recommendationId)
 }
 
 module.exports = {
@@ -69,6 +32,5 @@ module.exports = {
   getRecommendationById,
   searchRecommendationByKeyword,
   addRecommendation,
-  deleteRecommendationById,
-  deleteRecommendationImages
+  deleteRecommendationById
 }

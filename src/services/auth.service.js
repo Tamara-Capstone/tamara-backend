@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-
-const db = require('../utils/db')
+const User = require('../models/user.model')
 
 const hashing = (password) => {
   return bcrypt.hashSync(password, 10)
@@ -11,11 +10,11 @@ const checkPassword = (password, hashPassword) => {
 }
 
 const findUserByEmail = async (email) => {
-  return await db.user.findUnique({ where: { email } })
+  return await User.findOne({ email })
 }
 
 const addUser = async (payload) => {
-  return await db.user.create({ data: payload })
+  return await User.create(payload)
 }
 
 module.exports = { hashing, checkPassword, findUserByEmail, addUser }

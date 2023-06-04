@@ -1,11 +1,11 @@
-const db = require('../utils/db')
+const Analyze = require('../models/analyze.model')
 
 const addProduction = async (payload) => {
-  return await db.production.create({ data: payload })
+  return await Analyze.create(payload)
 }
 
 const getProductionUserLogin = async (userId) => {
-  return db.production.findMany({ where: { userId } })
+  return await Analyze.find({ userId })
 }
 
 const analyzeProduction = (payload) => {

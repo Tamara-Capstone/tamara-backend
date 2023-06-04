@@ -52,15 +52,15 @@ const onUpload = (file, next, req) => {
 }
 
 ImgUpload.uploadToGcs = (req, res, next) => {
-  if (req.file) {
-    onUpload(req.file, next)
-  } else if (req.files.length > 0) {
-    req.files.forEach((file) => {
-      onUpload(file, next, req)
-    })
-  } else {
-    next()
-  }
+  if (!req.file) return next()
+  onUpload(req.file, next)
+}
+
+ImgUpload.uploadManyToGcs = (req, res, next) => {
+  if (req.files.length === 0) return next()
+  req.files.forEach((file) => {
+    onUpload(file, next, req)
+  })
 }
 
 ImgUpload.delete = async (url) => {

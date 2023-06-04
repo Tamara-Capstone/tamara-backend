@@ -31,7 +31,7 @@ const login = async (req, res) => {
     const isValidPassword = authServices.checkPassword(value.password, user.password)
     if (!isValidPassword) return res.status(401).json({ error: 'Password is incorrect' })
 
-    const { password, ...others } = user
+    const { password, ...others } = user._doc
     const accessToken = signJWT(others)
     res.status(200).json({ message: `${user.fullname} has been login successfully`, accessToken })
   } catch (error) {

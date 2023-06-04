@@ -1,9 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 const axios = require('axios')
-const db = require('../utils/db')
 const FormData = require('form-data')
 const CONFIG = require('../config/environtment')
+const Predict = require('../models/predict.model')
+const Recommendation = require('../models/recommendation.model')
 
 const isAllowedFruit = (fruit) => {
   const existingFruit = ['cassava', 'chili', 'corn', 'guava', 'mango', 'potato', 'tea', 'tomato']
@@ -26,38 +27,15 @@ const deleteImagePredict = (filePath) => {
 }
 
 const addPredict = async (payload) => {
-  return await db.predict.create({ data: payload })
+  return await Predict.create(payload)
 }
 
 const getPredictsByUserId = async (userId) => {
-  return await db.predict.findMany({
-    where: { userId },
-    include: {
-      Recommendation: {
-        include: {
-          images: true
-        }
-      }
-    }
-  })
+  return await Predict.find({ userId }).populate({ path: 'recommendation' })
 }
 
 const getRecommendation = async (label, fruitName) => {
-  return await db.recommendation.findMany({
-    where: {
-      AND: {
-        class: {
-          equals: label
-        },
-        fruit_name: {
-          equals: fruitName
-        }
-      }
-    },
-    include: {
-      images: true
-    }
-  })
+  return await Recommendation.find({ class: label, fruit_name: fruitName })
 }
 
 module.exports = {

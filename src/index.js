@@ -1,13 +1,14 @@
-// require('@google-cloud/debug-agent').start()
-/* Modules */
+require('dotenv').config()
 const express = require('express')
-const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 const routes = require('./routes')
 const logger = require('./utils/logger')
+const connectDB = require('./utils/connectDB')
 
-dotenv.config()
+connectDB()
+
 const app = express()
 const port = 5000 || process.env.PORT
 
@@ -19,6 +20,14 @@ app.use(logger)
 
 routes(app)
 
-app.listen(port, () => {
-  console.log(`Server is listening on http://localhost:${port}`)
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB')
+  app.listen(port, () => {
+    console.log(`Server is listening on http://localhost:${port}`)
+  })
+})
+
+mongoose.connection.on('error', (error) => {
+  const { no, code, syscall, hostname } = error
+  console.log(`${no}: ${code}\t${syscall}\t${hostname}`)
 })
