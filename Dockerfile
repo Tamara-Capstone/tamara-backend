@@ -16,6 +16,9 @@ COPY credentials.json credentials.json
 # Copy source code
 COPY src ./src
 
+# Copy uploads folder
+COPY uploads ./uploads
+
 # Copy Prisma schema file
 COPY prisma ./prisma
 
