@@ -38,6 +38,7 @@ const createRecommendation = async (req, res) => {
   const { value, error } = recommendationValidation({ ...req.body, images: picture })
   if (error) return res.status(422).json({ error: error.details[0].message })
 
+  value.fruit_name = value.fruit_name.toLowerCase()
   try {
     const data = await recommendationServices.addRecommendation(value)
     res.status(200).json({ message: 'Success to add new recommendation', data })

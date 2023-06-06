@@ -7,16 +7,18 @@ const predictPicture = async (req, res) => {
   if (error) return res.status(422).json({ error: error.details[0].message })
   if (!req.file) return res.status(422).json({ error: 'Image is required' })
 
-  if (!predictServices.isAllowedFruit(value.fruit_name)) {
-    return res.status(422).json({ error: `${value.fruit_name} is not allowed` })
+  const fruitName = value.fruit_name.toLowerCase()
+  if (!predictServices.isAllowedFruit(fruitName)) {
+    return res.status(422).json({ error: `${fruitName} is not allowed` })
   }
 
   try {
-    const { data } = await predictServices.predictToML(req.file, value.fruit_name)
-    const recommendation = await predictServices.getRecommendation(data.label, value.fruit_name)
-    await predictServices.addPredict({ userId, recommendationId: recommendation[0].id })
+    const { data } = await predictServices.predictToML(req.file, fruitName)
+    const recommendation = await predictServices.getRecommendation(data.label, fruitName)
+    if (recommendation === null) return res.status(404).json({ error: 'Recommendation not found' })
+    await predictServices.addPredict({ userId, recommendationId: recommendation.id })
     predictServices.deleteImagePredict(req.file.filename)
-    res.status(200).json({ message: 'Success to predict', data: recommendation[0] })
+    res.status(200).json({ message: 'Success to predict', data: recommendation })
   } catch (error) {
     res.status(400).json({ error })
   }

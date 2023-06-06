@@ -35,9 +35,7 @@ const getPredictsByUserId = async (userId) => {
 }
 
 const getRecommendation = async (label, fruitName) => {
-  return await Recommendation.find({
-    $or: [{ class: { $regex: label, $options: 'i' } }, { fruit_name: { $regex: fruitName, $options: 'i' } }]
-  })
+  return await Recommendation.findOne({ class: label, fruit_name: fruitName })
 }
 
 module.exports = {
