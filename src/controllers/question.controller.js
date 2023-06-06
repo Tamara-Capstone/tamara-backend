@@ -67,11 +67,10 @@ const updateQuestion = async (req, res) => {
 
   try {
     const question = await QuestionServices.getUserLoginQuestion(questionId, userId)
-    if (!question.length > 0) {
-      return res.status(404).json({ error: `User do not have an question with id: ${questionId}` })
-    }
+    if (!question) return res.status(404).json({ error: `User do not have an question with id: ${questionId}` })
 
-    if (!value.picture) delete value.picture // delete picture on value if nothing
+    // delete picture on value if nothing
+    if (!value.picture) delete value.picture
     await QuestionServices.updateQuestionById(questionId, value)
     res.status(200).json({ message: 'Success to update question' })
   } catch (error) {
@@ -85,15 +84,12 @@ const deleteQuestion = async (req, res) => {
 
   try {
     const question = await QuestionServices.getUserLoginQuestion(questionId, userId)
-    if (!question.length > 0) {
-      return res.status(404).json({ error: `User do not have an question with id: ${questionId}` })
-    }
+    if (!question) return res.status(404).json({ error: `User do not have an question with id: ${questionId}` })
 
     // delete all answer and picture from question that want to delete
-    if (question[0].picture) await ImgUpload.delete(question[0].picture)
-    await QuestionServices.deleteAnswerByQuestionId(questionId)
+    if (question.picture) await ImgUpload.delete(question.picture)
     await QuestionServices.deleteQuestionById(questionId)
-
+    await QuestionServices.deleteAnswerByQuestionId(questionId)
     res.status(200).json({ message: 'Success to delete question' })
   } catch (error) {
     res.status(400).json({ error })

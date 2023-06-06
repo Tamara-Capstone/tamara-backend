@@ -2,15 +2,15 @@ const Question = require('../models/question.model')
 const Answer = require('../models/answer.model')
 
 const getAllQuestions = async () => {
-  return await Question.find().populate('userId', 'fullname email photo')
+  return await Question.find().populate('user', 'fullname email photo')
 }
 
 const getQuestionById = async (id) => {
-  return Question.findById(id).populate('userId', 'fullname email photo')
+  return Question.findById(id).populate('user', 'fullname email photo')
 }
 
 const getUserLoginQuestion = async (id, userId) => {
-  return await Question.find({ id, userId })
+  return await Question.findOne({ _id: id, userId })
 }
 
 const addQuestion = async (payload) => {
@@ -37,7 +37,7 @@ const searchQuestionByKeyword = async (keyword) => {
       { category: { $regex: keyword, $options: 'i' } }
     ]
   })
-    .populate('userId', 'fullname email photo')
+    .populate('user', 'fullname email photo')
     .sort({ createdAt: -1 })
 }
 

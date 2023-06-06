@@ -13,8 +13,19 @@ const predictSchema = new mongoose.Schema(
       required: true
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
 )
+
+predictSchema.virtual('recommendation', {
+  ref: 'recommendation',
+  localField: 'recommendationId',
+  foreignField: '_id',
+  justOne: true
+})
 
 const Predict = mongoose.model('predict', predictSchema)
 module.exports = Predict

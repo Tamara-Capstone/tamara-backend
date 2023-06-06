@@ -1,11 +1,11 @@
 const Answer = require('../models/answer.model')
 
 const getAnswerByQuestionId = async (questionId) => {
-  return await Answer.find({ questionId }).populate('userId', 'fullname email photo').sort({ createdAt: -1 })
+  return await Answer.find({ questionId }).populate('user', 'fullname email photo').sort({ createdAt: -1 })
 }
 
 const getAnswerById = async (id) => {
-  return await Answer.findById(id).populate('userId', 'fullname email photo')
+  return await Answer.findById(id).populate('user', 'fullname email photo')
 }
 
 const getUserLoginAnswer = async (answerId, userId) => {

@@ -16,8 +16,19 @@ const answerSchema = new mongoose.Schema(
       ref: 'question'
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
 )
+
+answerSchema.virtual('user', {
+  ref: 'user',
+  localField: 'userId',
+  foreignField: '_id',
+  justOne: true
+})
 
 const Answer = mongoose.model('answer', answerSchema)
 module.exports = Answer

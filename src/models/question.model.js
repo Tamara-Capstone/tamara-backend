@@ -28,8 +28,19 @@ const questionSchema = new mongoose.Schema(
       ref: 'answer'
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
 )
+
+questionSchema.virtual('user', {
+  ref: 'user',
+  localField: 'userId',
+  foreignField: '_id',
+  justOne: true
+})
 
 const Question = mongoose.model('question', questionSchema)
 module.exports = Question

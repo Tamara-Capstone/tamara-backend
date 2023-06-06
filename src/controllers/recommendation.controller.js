@@ -55,7 +55,7 @@ const deleteRecommendation = async (req, res) => {
     // Deleting images
     await Promise.all(
       data.images.map(async (imageUrl) => {
-        return await ImgUpload.delete(imageUrl.image)
+        return await ImgUpload.delete(imageUrl)
       })
     )
 

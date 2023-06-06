@@ -15,7 +15,7 @@ const predictToML = async (file, fruitName) => {
   const filePath = file.path
   const formData = new FormData()
   formData.append('file', fs.createReadStream(filePath))
-  return await axios.post(`${CONFIG.machineLearningUrl}/${fruitName}`, formData, {
+  return await axios.post(`${CONFIG.machineLearningUrl}/predict/${fruitName}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
@@ -31,11 +31,13 @@ const addPredict = async (payload) => {
 }
 
 const getPredictsByUserId = async (userId) => {
-  return await Predict.find({ userId }).populate({ path: 'recommendation' })
+  return await Predict.find({ userId }).populate('recommendation')
 }
 
 const getRecommendation = async (label, fruitName) => {
-  return await Recommendation.find({ class: label, fruit_name: fruitName })
+  return await Recommendation.find({
+    $or: [{ class: { $regex: label, $options: 'i' } }, { fruit_name: { $regex: fruitName, $options: 'i' } }]
+  })
 }
 
 module.exports = {

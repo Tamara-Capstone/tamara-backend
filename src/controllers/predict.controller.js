@@ -1,4 +1,3 @@
-// Mango_sooty_mold_disease
 const { predictValidation } = require('../validations/predict.validation')
 const predictServices = require('../services/predict.service')
 
@@ -17,7 +16,7 @@ const predictPicture = async (req, res) => {
     const recommendation = await predictServices.getRecommendation(data.label, value.fruit_name)
     await predictServices.addPredict({ userId, recommendationId: recommendation[0].id })
     predictServices.deleteImagePredict(req.file.filename)
-    res.status(200).json({ message: 'Success to predict', data: recommendation })
+    res.status(200).json({ message: 'Success to predict', data: recommendation[0] })
   } catch (error) {
     res.status(400).json({ error })
   }
