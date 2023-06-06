@@ -1,29 +1,21 @@
-# Base image
-FROM node:14.21.2-alpine
+# Use the official lightweight Python image.
+# https://hub.docker.com/_/python
+FROM python:3.9-slim
 
-# Set working directory
-WORKDIR /app
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
 
-# Environtment Variables
-ENV PORT 5000
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . ./
 
-# Copy package.json
-COPY package.json package.json
+# Install production dependencies.
+RUN pip install -r requirements.txt
 
-# Copy service account file
-COPY credentials.json credentials.json
-
-# Copy source code
-COPY src ./src
-
-# Copy Prisma schema file
-COPY prisma ./prisma
-
-# Install dependencies
-RUN npm install --omit=dev
-
-# Expose a port if needed
-EXPOSE 5000
-
-# Start the application
-CMD [ "npm", "run", "start"]
+# Run the web service on container startup. Here we use the gunicorn
+# webserver, with one worker process and 8 threads.
+# For environments with multiple CPU cores, increase the number of workers
+# to be equal to the cores available.
+# Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

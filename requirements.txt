@@ -1,0 +1,8 @@
+Flask
+numpy
+tensorflow
+werkzeug
+gunicorn
+google-cloud-storage
+pillow
+tensorflow_hub
