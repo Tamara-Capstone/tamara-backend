@@ -29,16 +29,13 @@ const getRecommendation = async (req, res) => {
 }
 
 const createRecommendation = async (req, res) => {
-  // check file sudah di upload ke storage
-  let picture = []
-  if (req.files) {
-    picture = req.files.map((file) => file.cloudStoragePublicUrl)
-  }
+  let image = ''
+  if (req.file && req.file.cloudStoragePublicUrl) image = req.file.cloudStoragePublicUrl
 
-  const { value, error } = recommendationValidation({ ...req.body, images: picture })
+  const { value, error } = recommendationValidation({ ...req.body, image })
   if (error) return res.status(422).json({ error: error.details[0].message })
 
-  value.fruit_name = value.fruit_name.toLowerCase()
+  value.tanaman = value.tanaman.toLowerCase()
   try {
     const data = await recommendationServices.addRecommendation(value)
     res.status(200).json({ message: 'Success to add new recommendation', data })
@@ -54,12 +51,7 @@ const deleteRecommendation = async (req, res) => {
     if (!data) return res.status(404).json({ error: `Recommendation with ID ${recommendationId} is not found` })
 
     // Deleting images
-    await Promise.all(
-      data.images.map(async (imageUrl) => {
-        return await ImgUpload.delete(imageUrl)
-      })
-    )
-
+    await ImgUpload.delete(data.image)
     await recommendationServices.deleteRecommendationById(recommendationId)
     res.status(200).json({ message: `Success to delete recommendation with ID ${recommendationId}` })
   } catch (error) {

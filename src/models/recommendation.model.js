@@ -1,24 +1,32 @@
 const mongoose = require('mongoose')
 
 const recommendationSchema = new mongoose.Schema({
-  fruit_name: {
+  tanaman: {
     type: String,
     required: true
   },
-  class: {
+  label: {
     type: String,
     required: true
   },
-  recommendation: {
+  penyakit: {
     type: String,
     required: true
   },
-  characteristics: {
+  penyebab: {
+    type: String,
+    default: null
+  },
+  gejala: {
     type: String,
     required: true
   },
-  images: {
+  rekomendasi: {
     type: [String],
+    required: true
+  },
+  image: {
+    type: String,
     require: true
   }
 })

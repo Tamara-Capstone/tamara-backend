@@ -9,8 +9,8 @@ recommendationRoute.get('/', recommendationController.getRecommendations)
 recommendationRoute.get('/:recommendationId', recommendationController.getRecommendation)
 recommendationRoute.post(
   '/',
-  uploadStorage.array('images'),
-  ImgUpload.uploadManyToGcs,
+  uploadStorage.single('image'),
+  ImgUpload.uploadToGcs,
   recommendationController.createRecommendation
 )
 recommendationRoute.delete('/:recommendationId', recommendationController.deleteRecommendation)

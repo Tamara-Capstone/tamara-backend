@@ -35,7 +35,7 @@ const getPredictsByUserId = async (userId) => {
 }
 
 const getRecommendation = async (label, fruitName) => {
-  return await Recommendation.findOne({ class: label, fruit_name: fruitName })
+  return await Recommendation.findOne({ label, tanaman: fruitName })
 }
 
 module.exports = {

@@ -11,10 +11,12 @@ const getRecommendationById = async (recommendationId) => {
 const searchRecommendationByKeyword = async (keyword) => {
   return await Recommendation.find({
     $or: [
-      { fruit_name: { $regex: keyword, $options: 'i' } },
-      { class: { $regex: keyword, $options: 'i' } },
-      { recommendation: { $regex: keyword, $options: 'i' } },
-      { characteristics: { $regex: keyword, $options: 'i' } }
+      { buah: { $regex: keyword, $options: 'i' } },
+      { label: { $regex: keyword, $options: 'i' } },
+      { penyakit: { $regex: keyword, $options: 'i' } },
+      { penyebab: { $regex: keyword, $options: 'i' } },
+      { gejala: { $regex: keyword, $options: 'i' } },
+      { rekomendasi: { $regex: keyword, $options: 'i' } }
     ]
   })
 }
