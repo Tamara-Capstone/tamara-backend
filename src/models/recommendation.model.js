@@ -18,7 +18,7 @@ const recommendationSchema = new mongoose.Schema({
     default: null
   },
   gejala: {
-    type: String,
+    type: [String],
     required: true
   },
   rekomendasi: {

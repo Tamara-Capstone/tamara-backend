@@ -2,7 +2,7 @@ const Question = require('../models/question.model')
 const Answer = require('../models/answer.model')
 
 const getAllQuestions = async () => {
-  return await Question.find().populate('user', 'fullname email photo')
+  return await Question.find().populate('user', 'fullname email photo').sort({ createdAt: -1 })
 }
 
 const getQuestionById = async (id) => {
