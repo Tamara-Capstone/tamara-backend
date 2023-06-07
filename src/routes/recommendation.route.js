@@ -6,7 +6,6 @@ const recommendationController = require('../controllers/recommendation.controll
 const recommendationRoute = express.Router()
 
 recommendationRoute.get('/', recommendationController.getRecommendations)
-recommendationRoute.get('/:recommendationId', recommendationController.getRecommendation)
 recommendationRoute.post(
   '/',
   uploadStorage.single('image'),
