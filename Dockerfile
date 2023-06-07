@@ -19,9 +19,6 @@ COPY src ./src
 # Copy uploads folder
 COPY uploads ./uploads
 
-# Copy Prisma schema file
-COPY prisma ./prisma
-
 # Install dependencies
 RUN npm install --omit=dev
 
