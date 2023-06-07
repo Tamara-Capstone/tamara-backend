@@ -28,9 +28,9 @@ MODEL_PATHS = {
     "chili": {
         "path": "chili.h5",
         "label_map": {
-            0: "chili_leaf_curl",
-            1: "chili_leaf_spot",
-            2: "chili_healthy",
+            0: "chili_healthy",
+            1: "chili_leaf_curl",
+            2: "chili_leaf_spot",
             3: "chili_whitefly",
             4: "chili_yellowish"
         },
@@ -42,8 +42,8 @@ MODEL_PATHS = {
             0: "cassava_bacterial_blight",
             1: "cassava_brown_streak_disease",
             2: "cassava_green_mottle",
-            3: "cassava_healthy",
-            4: "cassava_mosaic_disease"
+            3: "cassava_mosaic_disease",
+            4: "cassava_healthy"
         },
         "input_shape" : (224, 224, 3)
     },
@@ -62,8 +62,8 @@ MODEL_PATHS = {
         "path": "potato.h5",
         "label_map": {
             0: "potato_early_blight",
-            1: "potato_healthy",
-            2: "potato_late_blight"
+            1: "potato_late_blight",
+            2: "potato_healthy",
         },
         "input_shape" : (256, 256, 3)
     },
@@ -97,10 +97,10 @@ MODEL_PATHS = {
     "corn": {
         "path": "corn.h5",
         "label_map": {
-            0: "corn_common_rust",
-            1: "corn_gray_leaf_spot",
-            2: "corn_healthy",
-            3: "corn_northern_leaf_blight"
+            0: "corn_northern_leaf_blight",
+            1: "corn_common_rust",
+            2: "corn_gray_leaf_spot",
+            3: "corn_healthy",
         },
         "input_shape" : (224, 224, 3)
     },
