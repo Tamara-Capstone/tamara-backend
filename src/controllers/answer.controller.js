@@ -3,11 +3,9 @@ const validations = require('../validations/answer.validation')
 const { getQuestionById } = require('../services/question.service')
 
 const getAnswers = async (req, res) => {
-  const { value, error } = validations.getAnswersValidation(req.body)
-  if (error) return res.status(422).json({ error: error.details[0].message })
+  const { questionId } = req.params
 
   try {
-    const { questionId } = value
     const question = await getQuestionById(questionId)
     if (!question) return res.status(422).json({ error: `Question with ID: ${questionId} is not found` })
 

@@ -15,15 +15,7 @@ const updateAnswerValidation = (payload) => {
   return schema.validate(payload)
 }
 
-const getAnswersValidation = (payload) => {
-  const schema = Joi.object({
-    questionId: Joi.string().required()
-  })
-  return schema.validate(payload)
-}
-
 module.exports = {
   createAnswerValidation,
-  getAnswersValidation,
   updateAnswerValidation
 }

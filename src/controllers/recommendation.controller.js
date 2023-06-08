@@ -21,6 +21,14 @@ const createRecommendation = async (req, res) => {
   let image = ''
   if (req.file && req.file.cloudStoragePublicUrl) image = req.file.cloudStoragePublicUrl
 
+  if (!Array.isArray(req.body.gejala)) {
+    req.body.gejala = [req.body.gejala]
+  }
+
+  if (!Array.isArray(req.body.rekomendasi)) {
+    req.body.rekomendasi = [req.body.rekomendasi]
+  }
+
   const { value, error } = recommendationValidation({ ...req.body, image })
   if (error) return res.status(422).json({ error: error.details[0].message })
 
