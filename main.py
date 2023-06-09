@@ -113,7 +113,7 @@ MODEL_PATHS = {
             3: "rice_leaf_blast",
             4: "rice_neck_blast",
         },
-        "input_shape" : (224, 224, 3)
+        "input_shape" : (180, 180, 3)
     },
 }
 
