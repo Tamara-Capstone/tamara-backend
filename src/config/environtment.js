@@ -5,6 +5,7 @@ const CONFIG = {
   googleProjectId: process.env.GOOGLE_PROJECT_ID,
   storageBucketName: process.env.STORAGE_BUCKET_NAME,
   machineLearningUrl: process.env.MACHINE_LEARNING_URL,
+  fruits: process.env.FRUITS,
   weatherApiUrl: 'https://ibnux.github.io/BMKG-importer/cuaca'
 }
 

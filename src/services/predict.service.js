@@ -7,7 +7,7 @@ const Predict = require('../models/predict.model')
 const Recommendation = require('../models/recommendation.model')
 
 const isAllowedFruit = (fruit) => {
-  const existingFruit = ['cassava', 'chili', 'corn', 'guava', 'mango', 'potato', 'tea', 'tomato']
+  const existingFruit = CONFIG.fruits.split(',')
   return existingFruit.includes(fruit)
 }
 
