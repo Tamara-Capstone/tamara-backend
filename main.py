@@ -104,6 +104,17 @@ MODEL_PATHS = {
         },
         "input_shape" : (224, 224, 3)
     },
+    "rice": {
+        "path": "rice.h5",
+        "label_map": {
+            0: "rice_healthy",
+            1: "rice_brown_spot",
+            2: "rice_hispa",
+            3: "rice_leaf_blast",
+            4: "rice_neck_blast",
+        },
+        "input_shape" : (224, 224, 3)
+    },
 }
 
 BUCKET_NAME = "tamara-bucket"
