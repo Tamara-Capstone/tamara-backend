@@ -2,8 +2,8 @@ const Joi = require('joi')
 
 const predictValidation = (payload) => {
   const schema = Joi.object({
-    fruit_name: Joi.string().required(),
-    images: Joi.any()
+    plant_name: Joi.string().required(),
+    image: Joi.any()
   })
   return schema.validate(payload)
 }

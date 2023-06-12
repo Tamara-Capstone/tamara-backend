@@ -5,9 +5,7 @@ const recommendationValidation = (payload) => {
     tanaman: Joi.string().required(),
     label: Joi.string().required(),
     penyakit: Joi.string().required(),
-    penyebab: Joi.string().required(),
-    gejala: Joi.array().items(Joi.string()).required().min(0),
-    rekomendasi: Joi.array().items(Joi.string()).required().min(0),
+    hasil: Joi.any(),
     image: Joi.string().required()
   })
   return schema.validate(payload)

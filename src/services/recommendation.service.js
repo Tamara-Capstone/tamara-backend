@@ -7,7 +7,7 @@ const getAllRecommendation = async () => {
 const searchRecommendationByKeyword = async (keyword) => {
   return await Recommendation.find({
     $or: [
-      { buah: { $regex: keyword, $options: 'i' } },
+      { tanaman: { $regex: keyword, $options: 'i' } },
       { label: { $regex: keyword, $options: 'i' } },
       { penyakit: { $regex: keyword, $options: 'i' } }
     ]

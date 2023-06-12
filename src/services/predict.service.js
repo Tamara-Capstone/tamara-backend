@@ -7,7 +7,7 @@ const Predict = require('../models/predict.model')
 const Recommendation = require('../models/recommendation.model')
 
 const isAllowedFruit = (fruit) => {
-  const existingFruit = CONFIG.fruits.split(',')
+  const existingFruit = CONFIG.fruits.split(', ')
   return existingFruit.includes(fruit)
 }
 
@@ -34,8 +34,8 @@ const getPredictsByUserId = async (userId) => {
   return await Predict.find({ userId }).populate('recommendation')
 }
 
-const getRecommendation = async (label, fruitName) => {
-  return await Recommendation.findOne({ label, tanaman: fruitName })
+const getRecommendation = async (label, plantName) => {
+  return await Recommendation.findOne({ label, tanaman: plantName })
 }
 
 module.exports = {
