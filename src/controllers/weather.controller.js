@@ -21,7 +21,9 @@ const getWeather = async (req, res) => {
 
       const data = await weatherServices.getWeatherByLocation(value.lat, value.lon)
       if (!data) return res.status(404).json({ error: 'Data not found, please check your body request' })
-      return res.status(200).json({ message: 'Success to get wheater from location', data })
+
+      const result = weatherServices.getWeatherByDate(data)
+      return res.status(200).json({ message: 'Success to get wheater from location', data: result })
     }
 
     res.status(404).json({ message: 'Query params is not found' })
@@ -30,7 +32,7 @@ const getWeather = async (req, res) => {
   }
 }
 
-const getWeatherDetail = async (req, res) => {
+const getWeatherDetailById = async (req, res) => {
   const { weatherId } = req.params
   try {
     const data = await weatherServices.getWeatherById(weatherId)
@@ -41,4 +43,18 @@ const getWeatherDetail = async (req, res) => {
   }
 }
 
-module.exports = { getWeather, getWeatherDetail }
+const getWeatherDetailByLocation = async (req, res) => {
+  const { lat, lon } = req.query
+  const { value, error } = weatherValidation({ lat, lon })
+  if (error) return res.status(422).json({ error: error.details[0].message })
+
+  try {
+    const data = await weatherServices.getWeatherByLocation(value.lat, value.lon)
+    if (!data) return res.status(404).json({ error: 'Data not found, please check your body request' })
+    return res.status(200).json({ message: 'Success to get wheater from location', data })
+  } catch (error) {
+    res.status(400).json({ error })
+  }
+}
+
+module.exports = { getWeather, getWeatherDetailById, getWeatherDetailByLocation }
