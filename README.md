@@ -60,10 +60,10 @@ We use JavaScript programming language with Node.js environment. For the framewo
 
 Open Command Prompt/Powershell and type:
 
-    ```bash
-    cd <project_name>
-    npm run start
-    ```
+```bash
+cd <project_name>
+npm run start
+```
 
 ## API Endpoints
 
