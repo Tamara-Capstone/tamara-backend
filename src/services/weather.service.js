@@ -14,7 +14,7 @@ const getWeatherByLocation = async (lat, lon) => {
   const weathers = await getAllWeathers()
   const response = weathers.filter((wheater) => parseFloat(wheater.lat) === lat && parseFloat(wheater.lon) === lon)
   const data = await getWeatherById(response[0].id)
-  const result = getRecommendationWeather(data)
+  const result = data.map((weather) => ({ ...response[0], ...weather }))
   return result
 }
 
@@ -58,20 +58,39 @@ const getRecommendationWeather = (weathers) => {
 }
 
 const getWeatherByDate = (weather) => {
-  const waktuSaatIni = new Date()
-  const formatWaktuSaatIni = waktuSaatIni.toISOString().slice(0, 19).replace('T', ' ')
-  const hasil = weather.reduce(
-    (closest, cuaca) => {
-      const waktuCuaca = new Date(cuaca.jamCuaca)
-      const waktuTerdekat = new Date(closest.jamCuaca)
-      if (waktuCuaca <= waktuSaatIni && waktuCuaca > waktuTerdekat) {
-        return cuaca
+  const getCurrentTime = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    const seconds = String(now.getSeconds()).padStart(2, '0')
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  }
+
+  // Fungsi untuk mendapatkan data cuaca terdekat dengan waktu saat ini
+  const getNearestWeatherData = (data) => {
+    const currentTime = getCurrentTime()
+    let nearestData = null
+    let timeDiff = Infinity
+
+    data.forEach((item) => {
+      const dataTime = new Date(item.jamCuaca)
+      const diff = Math.abs(dataTime - new Date(currentTime))
+
+      if (diff < timeDiff) {
+        nearestData = item
+        timeDiff = diff
       }
-      return closest
-    },
-    { jamCuaca: formatWaktuSaatIni }
-  )
-  return hasil
+    })
+
+    return nearestData
+  }
+
+  const nearestWeatherData = getNearestWeatherData(weather)
+  return nearestWeatherData
 }
 
 module.exports = {
