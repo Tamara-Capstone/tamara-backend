@@ -69,8 +69,8 @@ npm run start
 - **[POST]** `/auth/register` : This endpoint allows the client to register to the application and save user data to MongoDB.
 - **[POST]** `/auth/login` : This endpoint allows the client to log in and get the Bearer token response for the application.
 - **[GET]** `/user` : This endpoint allows the client to get their details.
-- **[GET]** `/weather?lat=<lat>&long=<long>` : This endpoint allows the client to get the current weather data.
-- **[GET]** `/weather/detail?lat=<lat>&long=<long>` : This endpoint allows the client to get weather predictions
+- **[GET]** `/weather?lat=<lat>&lon=<lon>` : This endpoint allows the client to get the current weather data.
+- **[GET]** `/weather/detail?lat=<lat>&lon=<lon>` : This endpoint allows the client to get weather predictions
 - **[POST]** `/predict` : This endpoint allows the client to get predictions of crop conditions
 - **[GET]** `/predict` : This endpoint allows the client to get all the prediction data that has been done by the client
 - **[POST]** `/analyze` : This endpoint allows the client to make an analysis of the production produced by their crops
@@ -83,6 +83,14 @@ npm run start
 3. Open POSTMAN
 4. Set the method you want to test (Check 'API Endpoints' section), e.g GET
 5. Set http://localhost:5000 as the base URL.
-6. Add endpoint on the end of base URL, e.g http://localhost:5000/plant/
+6. Add endpoint on the end of base URL, e.g http://localhost:5000/register
+7. Filled the body request
+```bash
+{
+  "fullname": "your_full_name"
+  "email": "name@email.com",
+  "password": "securePassword",
+}
+```
 7. Click Send
-8. You should get a JSON response
+8. You should get a JSON response 
