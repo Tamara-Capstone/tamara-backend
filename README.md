@@ -1,4 +1,7 @@
-# TAMARA (Tani Maju Sejahtera) Backend
+# TAMARA Backend
+<p align="center">
+  <img src="https://github.com/Tamara-Capstone/tamara-backend/assets/84588706/068f885f-20c7-4a5c-b661-ca93d51d3dd3"/>
+</p>
 
 ## Overview
 
@@ -82,13 +85,14 @@ npm run start
 4. Set the method you want to test (Check 'API Endpoints' section), e.g GET
 5. Set http://localhost:5000 as the base URL.
 6. Add endpoint on the end of base URL, e.g http://localhost:5000/register
-7. Filled the body request
-```bash
-{
-  "fullname": "your_full_name"
-  "email": "name@email.com",
-  "password": "securePassword",
-}
-```
-7. Click Send
-8. You should get a JSON response 
+7. Filled out the body request
+    ```bash
+    {
+      "fullname": "your_full_name"
+      "email": "name@email.com",
+      "password": "securePassword",
+    }
+
+    ```
+8. Click Send
+9. You should get a JSON response 
