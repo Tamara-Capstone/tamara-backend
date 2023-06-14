@@ -1,7 +1,5 @@
 # TAMARA (Tani Maju Sejahtera) Backend
 
-[![top-language][img-shield-languange]][JavaScript]
-
 ## Overview
 
 This repository contains backend application projects used in TAMARA mobile application (Android). There are several APIs that we build into multiple endpoints such as User Authentication (Login & Register), Plants Disease Prediction, Weather Prediction, and Analysis Production of user plants.
