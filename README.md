@@ -27,43 +27,43 @@ We use JavaScript programming language with Node.js environment. For the framewo
 
 1. Clone the repository
 
-```bash
-git clone https://github.com/Tamara-Capstone/tamara-backend.git <project_name>
-```
+    ```bash
+    git clone https://github.com/Tamara-Capstone/tamara-backend.git <project_name>
+    ```
 
 2. Open the project directory on terminal
 
-```bash
-cd <project_name>
-```
+    ```bash
+    cd <project_name>
+    ```
 
 3. Setting up the environment variables. Create `.env` file and fill this to that file
 
-```bash
-ACCESS_TOKEN_SECRET=
-MACHINE_LEARNING_URL=
-MONGODB_URL=
-FRUITS="cassava, chili, corn, guava, mango, potato, tea, tomato"
+    ```bash
+    ACCESS_TOKEN_SECRET=
+    MACHINE_LEARNING_URL=
+    MONGODB_URL=
+    FRUITS="cassava, chili, corn, guava, mango, potato, tea, tomato"
 
-# GCP
-GOOGLE_PROJECT_ID=
-STORAGE_BUCKET_NAME=
-```
+    # GCP
+    GOOGLE_PROJECT_ID=
+    STORAGE_BUCKET_NAME=
+    ```
 
 4. Install all required dependencies
 
-```bash
-npm install
-```
+    ```bash
+    npm install
+    ```
 
 ## Run The Application
 
 Open Command Prompt/Powershell and type:
 
-```bash
-cd <project_name>
-npm run start
-```
+    ```bash
+    cd <project_name>
+    npm run start
+    ```
 
 ## API Endpoints
 
