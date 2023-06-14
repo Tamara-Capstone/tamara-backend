@@ -5,7 +5,7 @@
 
 ## Overview
 
-This repository contains backend application projects used in TAMARA mobile application (Android). There are several APIs that we build into multiple endpoints such as User Authentication (Login & Register), Plants Disease Prediction, Weather Prediction, and Analysis Production of user plants.
+This repository contains backend application projects used in TAMARA mobile application (Android). There are several APIs that we build into multiple endpoints such as User Authentication (Login & Register), Plants Disease Prediction, Weather Prediction, and Track Productivity of user land.
 
 We use JavaScript programming language with Node.js environment. For the framework, we use Express because this framework is used to design and build webservice applications (RESTful API) quickly and easily.
 
