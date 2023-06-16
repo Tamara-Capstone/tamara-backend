@@ -10,11 +10,31 @@ const getAllWeathers = async () => {
   return data
 }
 
+const getNearestCity = (weathers, lat, lon) => {
+  let nearestCity = null
+  let minDistance = Infinity
+
+  weathers.forEach((city) => {
+    const latDiff = Math.abs(parseFloat(lat) - parseFloat(city.lat))
+    const lonDiff = Math.abs(parseFloat(lon) - parseFloat(city.lon))
+    const distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff)
+
+    if (distance < minDistance) {
+      minDistance = distance
+      nearestCity = city
+    }
+  })
+
+  return nearestCity
+}
+
 const getWeatherByLocation = async (lat, lon) => {
+  let response
   const weathers = await getAllWeathers()
-  const response = weathers.filter((wheater) => parseFloat(wheater.lat) === lat && parseFloat(wheater.lon) === lon)
-  const data = await getWeatherById(response[0].id)
-  const result = data.map((weather) => ({ ...response[0], ...weather }))
+  response = weathers.filter((wheater) => parseFloat(wheater.lat) === lat && parseFloat(wheater.lon) === lon)[0]
+  if (!response) response = getNearestCity(weathers, lat, lon)
+  const data = await getWeatherById(response.id)
+  const result = data.map((weather) => ({ ...response, ...weather }))
   return result
 }
 
